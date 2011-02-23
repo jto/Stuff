@@ -20,7 +20,7 @@ html body > *{
 
 aside{
     display: block;
-    width: 200px;
+    width: 180px;
     border-right: solid 1px #656565;
     background: #DEE4EA;
     padding: 1px 0;
@@ -31,14 +31,29 @@ aside h2{
     text-shadow: 1px 1px 1px white;
     text-transform: uppercase;
     font-weight: bold;
-    margin-top: 10px;
     padding-left: 10px;
+    margin: 3px 0 2px 0;
+}
+
+aside ul{
+    margin-bottom: 10px;
 }
 
 aside ul li{
-    margin: 3px 0;
-    padding: 3px 5px 3px 20px;
+    margin: 0;
+    padding: 0px 0 0px 25px;
 }
+
+aside ul li:before{
+    margin-right: 5px;
+}
+
+aside ul li.inbox:before{ content: url('../images/FocusInbox-20.png');}
+aside ul li.today:before{ content: url('../images/FocusToday-20.png');}
+aside ul li.next:before{ content: url('../images/FocusNextActions-20.png');}
+aside ul li.scheduled:before{ content: url('../images/FocusTickler-20.png');}
+aside ul li.someday:before{ content: url('../images/FocusMaybe-20.png');}
+aside ul li.projects:before{ content: url('../images/FocusActivityLevel-1-20.png');}
 
 aside ul li.active{
     border: solid 1px #A2B1C9;
@@ -52,6 +67,7 @@ aside ul li.active a{
 }
 
 aside ul li a{
+    vertical-align: 4px;
     color: black;
     text-decoration: none;
 }
@@ -70,10 +86,52 @@ aside ul li a{
 
 #right article ul li{
     background: -webkit-gradient(linear, left top,left bottom, from(#FEFFFE), to(#EDEDED));
-    padding: 6px 10px;
     -webkit-box-shadow: 0px 0px 2px rgba(0,0,0,0.3);
     -webkit-border-radius: 4px;
     margin-bottom: 1px;
+    padding: 3px 0;
+}
+
+#right article ul li.expanded{
+    margin-bottom: 6px;
+    -webkit-box-shadow: 0px 0px 5px rgba(0,0,0,0.8);
+}
+
+#right article ul li.expanded dl,
+#right article ul li dl.name{
+    display: -webkit-box;
+}
+
+#right article ul li.expanded dl{
+    border-bottom: solid 1px #E6E6E6;
+    border-top: solid 1px white;
+}
+
+
+#right article ul li dl{
+    padding: 0px 5px;
+    display: none;
+    -webkit-box-orient: horizontal;
+}
+
+#right article ul li.expanded dl:first-child{
+   border-top: none; 
+}
+#right article ul li.expanded dl:last-child{
+   border-bottom: none; 
+}
+
+#right article ul li dd,
+#right article ul li dt{
+    padding: 3px;
+    display: block;
+}
+
+#right article ul li dt{
+    width: 10px;
+}
+#right article ul li dd{
+    -webkit-box-flex: 1;
 }
 
 #right footer{
