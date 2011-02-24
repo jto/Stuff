@@ -5,9 +5,115 @@
     <script src="js/underscore-min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/zepto.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/backbone-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/mustache.js" type="text/javascript" charset="utf-8"></script>
     
     <link rel="stylesheet" type="text/css" media="screen" href="css/reset-min.css" />
     <link rel="stylesheet" type="text/css" media="screen" href="css/default.css" />
+    <script type="text/javascript" charset="utf-8">
+    $(function(){
+      
+      var Tmpl = {
+        load: function(id, view){
+          var t = document.getElementById(id)
+          var str = ""
+          var k = t.firstChild
+          var template = k.textContent
+          return Mustache.to_html(template, view)
+        }
+      }
+      
+      // ==========
+      // = MODELS =
+      // ==========
+      var Todo = Backbone.Model.extend({
+        defaults: {
+            "name": "New ToDo",
+            "tags": [],
+            "note": "",
+            "date": new Date()
+          }
+      });
+      
+      Backbone.sync = function(method, model){
+        console.info('Sync: %o', model)
+      }
+      
+      // ===============
+      // = Controllers =
+      // ===============
+      var Inbox = Backbone.Controller.extend({
+        routes: {
+          "inbox": "inbox",
+          "inbox/save/:name": "save"
+        },
+        
+        inbox: function(){
+          console.log('Hello inbox')
+        },
+        
+        save: function(name){
+          var t = new Todo({"name": name})
+          t.save()
+        }
+      });
+      
+      var inbox = new Inbox()
+      
+      Backbone.history.start()
+      
+      // =========
+      // = Views =
+      // =========
+      var TodoRow = Backbone.View.extend({
+
+        tagName: "li",
+        model: {},
+
+        events: {
+        },
+
+        initialize: function() {
+          _.bindAll(this, "render")
+        },
+        
+        render: function(model){
+          $(this.el).html(Tmpl.load('todo-tmpl', this.model.toJSON()))
+          return this
+        }
+      });
+      
+      
+      //Init script
+      var demoTodo = new Todo({"name": 'Hello World'})
+      var t = new TodoRow({'model':demoTodo, 'el':'#inbox ul'})
+      t.render()
+    })
+    </script>
+    
+    <!-- Templates -->
+    <script type="text/html" charset="utf-8" id="todo-tmpl">
+      <li class="expanded">
+        <section>
+          <dl class="name">
+            <dt><img src="images/checkbox_blank-N.png" /></dt>
+            <dd><input type="text" name="name" value="{{name}}" placeholder="new todo" /></dd>
+          </dl>
+          <dl class="tags">
+            <dt><img src="images/Edit-Tag.png" /></dt>
+            <dd><input type="text" name="tag" value="" placeholder="tags" /></dd>
+          </dl>
+          <dl>
+            <dt><img src="images/note.png" /></dt>
+            <dd><input type="text" name="note" value="" placeholder="note" /></dd>
+          </dl>
+          <dl>
+            <dt><img src="images/Edit-DueDate.png" /></dt>
+            <dd><input type="text" name="date" value="" placeholder="due date" /></dd>
+          </dl>
+        </section>
+      </li>
+    </script>
+    
   </head>
   <body>
     <aside>
@@ -41,90 +147,6 @@
     <div id="right">
       <article id="inbox">
         <ul>
-          <li class="expanded">
-            <section>
-              <dl class="name">
-                <dt><img src="images/checkbox_blank-N.png" /></dt>
-                <dd><input type="text" name="name" value="" placeholder="new todo" /></dd>
-              </dl>
-              <dl class="tags">
-                <dt><img src="images/Edit-Tag.png" /></dt>
-                <dd><input type="text" name="tag" value="" placeholder="tags" /></dd>
-              </dl>
-              <dl>
-                <dt><img src="images/note.png" /></dt>
-                <dd><input type="text" name="note" value="" placeholder="note" /></dd>
-              </dl>
-              <dl>
-                <dt><img src="images/Edit-DueDate.png" /></dt>
-                <dd><input type="text" name="date" value="" placeholder="due date" /></dd>
-              </dl>
-              
-            </section>
-          </li>
-          <li class="">
-            <section>
-              <dl class="name">
-                <dt></dt>
-                <dd>New ToDo</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Tag</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Notes</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Due date</dd>
-              </dl>
-              
-            </section>
-          </li>
-          <li class="">
-            <section>
-              <dl class="name">
-                <dt></dt>
-                <dd>New ToDo</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Tag</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Notes</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Due date</dd>
-              </dl>
-              
-            </section>
-          </li>
-          <li class="">
-            <section>
-              <dl class="name">
-                <dt></dt>
-                <dd>New ToDo</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Tag</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Notes</dd>
-              </dl>
-              <dl>
-                <dt></dt>
-                <dd>Due date</dd>
-              </dl>
-              
-            </section>
-          </li>
         </ul>
       </article>
       <footer>
