@@ -14,8 +14,28 @@ html body{
     -webkit-box-orient: horizontal;
 }
 
+a{
+    color: black;
+    text-decoration: none;
+}
+
 html body > *{
     height: 100%;
+}
+
+h1{font-size: 1.5em}
+h2{font-size: 1.1em}
+
+input[type=text]{
+    width: 100%;
+    padding: 1px 5px;
+    border: none;
+    background: transparent;
+}
+
+input[type=text]:active,
+input[type=text]:focus{
+    outline: none;
 }
 
 aside{
@@ -68,8 +88,6 @@ aside ul li.active a{
 
 aside ul li a{
     vertical-align: 4px;
-    color: black;
-    text-decoration: none;
 }
 
 #right{
@@ -104,7 +122,7 @@ aside ul li a{
 
 #right article ul li.expanded dl{
     border-bottom: solid 1px #E6E6E6;
-    border-top: solid 1px white;
+    /*border-top: solid 1px white;*/
 }
 
 
@@ -112,6 +130,11 @@ aside ul li a{
     padding: 0px 5px;
     display: none;
     -webkit-box-orient: horizontal;
+}
+
+#right article ul li dl.tags{
+    height: 40px;
+    background: #FAF9F0;
 }
 
 #right article ul li.expanded dl:first-child{
@@ -129,14 +152,32 @@ aside ul li a{
 
 #right article ul li dt{
     width: 10px;
+    margin-right: 5px;
 }
 #right article ul li dd{
     -webkit-box-flex: 1;
 }
 
+#right article ul li dt img{
+    display:block;
+}
+
 #right footer{
     display: block;
-    height: 40px;
+    height: 55px;
     background: #DDD;
     border-top: solid 1px #656565;
+}
+
+#right footer ul li{
+    display:inline-block;
+}
+#right footer ul li a{
+    padding: 4px 7px;
+    display: block;
+    text-align: center;
+}
+
+#right footer ul li a img{
+    display: block;
 }
