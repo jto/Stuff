@@ -118,6 +118,10 @@ aside ul li a{
     cursor: pointer;
 }
 
+#right article ul li.done{
+    opacity: 0.5;
+}
+
 #right article ul li.expanded{
     margin-bottom: 6px;
     margin-top: 6px;

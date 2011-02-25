@@ -62,7 +62,8 @@
         events: {
           "keypress input": "onkeypress",
           "click": "select",
-          "dblclick": "expand"
+          "dblclick": "expand",
+          "click .name dt":"done"
         },
 
         initialize: function() {
@@ -79,7 +80,6 @@
             //this should be in a controller ?
             this.model.set(this.getVals())
             Todos.save(this.model)
-            history.back(1)
           }
         },
         
@@ -95,8 +95,17 @@
         },
         
         expand: function(){
+          $("#inbox ul " + this.tagName).removeClass('expanded')
           $(this.el).addClass('expanded')
           return this
+        },
+        
+        done: function(){
+          console.log(this.model.get('done'))
+          if(this.model.get('done'))
+            this.model.set({'done':false})
+          else
+            this.model.set({'done':true})
         },
         
         getVals: function(){
@@ -108,9 +117,14 @@
         },
         
         render: function(model){
-          $(this.el).html(Tmpl.load('todo-tmpl', this.model.toJSON()))
+          var root = $(this.el)
+          root.html(Tmpl.load('todo-tmpl', this.model.toJSON()))
+          if(this.model.get('done'))
+            root.addClass('done')
+          else
+            root.removeClass('done')
           if(!this.displayed){
-            $("#inbox ul").prepend(this.el)
+            $("#inbox ul").prepend(root)
             this.displayed = true
           }
           return this
@@ -122,13 +136,9 @@
       // ===============
       var Inbox = Backbone.Controller.extend({
         routes: {
-          "inbox": "inbox",
           "new": "add"
         },
-        
-        inbox: function(){
-        },
-        
+                
         add: function(){
           new TodoRow({className: 'expanded'}).render()
         }
@@ -148,7 +158,7 @@
           //fixture
           if(!collection.length){
             console.info('Init todos')
-            var first = new Todo({"name": 'Hello World'})
+            var first = new Todo({"name": 'Hello World', 'done': true})
             collection.create(first)
           }
           collection.chain()
