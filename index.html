@@ -32,13 +32,22 @@
             "tags": [],
             "note": "",
             "date": new Date(),
+            "done":false
           }
-      });
-            
-      var Todos = Backbone.Collection.extend({
+      })
+      
+      var TodoList = Backbone.Collection.extend({
         model: Todo,
-        localStorage: new Store("Todos")
-      });
+        localStorage: new Store("Todos"),
+        
+        save: function(model){
+          if(model.id)
+            model.save()
+          else
+            this.create(model)
+        }
+      })
+      
       
       // =========
       // = Views =
@@ -64,13 +73,12 @@
         },
         
         onkeypress: function(e){
+          //TODO: edit and delete
           if (e.keyCode == 13){
             $(this.el).removeClass(this.className)
-            console.log(this.model)
+            //this should be in a controller ?
             this.model.set(this.getVals())
-            console.log(this.model)
-            //this should be in a controller
-            todos.create(this.model)
+            Todos.save(this.model)
             history.back(1)
           }
         },
@@ -134,8 +142,8 @@
       // = Init =
       // ========
       //Load todos from persistence layer
-      var todos = new Todos()
-      todos.fetch({
+      var Todos = new TodoList()
+      Todos.fetch({
         success: function(collection, response){
           //fixture
           if(!collection.length){
