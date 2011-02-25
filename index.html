@@ -5,6 +5,7 @@
     <script src="js/underscore-min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/zepto.min.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/backbone-min.js" type="text/javascript" charset="utf-8"></script>
+    <script src="js/backbone-localstorage.js" type="text/javascript" charset="utf-8"></script>
     <script src="js/mustache.js" type="text/javascript" charset="utf-8"></script>
     
     <link rel="stylesheet" type="text/css" media="screen" href="css/reset-min.css" />
@@ -30,36 +31,14 @@
             "name": "New ToDo",
             "tags": [],
             "note": "",
-            "date": new Date()
+            "date": new Date(),
           }
       });
-      
-      Backbone.sync = function(method, model){
-        console.info('Sync: %o', model)
-      }
-      
-      // ===============
-      // = Controllers =
-      // ===============
-      var Inbox = Backbone.Controller.extend({
-        routes: {
-          "inbox": "inbox",
-          "inbox/save/:name": "save"
-        },
-        
-        inbox: function(){
-          console.log('Hello inbox')
-        },
-        
-        save: function(name){
-          var t = new Todo({"name": name})
-          t.save()
-        }
+            
+      var Todos = Backbone.Collection.extend({
+        model: Todo,
+        localStorage: new Store("Todos")
       });
-      
-      var inbox = new Inbox()
-      
-      Backbone.history.start()
       
       // =========
       // = Views =
@@ -68,31 +47,80 @@
 
         tagName: "li",
         model: {},
-
+        expanded: false,
+        displayed: false,
+        
         events: {
         },
 
         initialize: function() {
-          _.bindAll(this, "render")
+          _.bindAll(this, "render", "expand")
+          //refresh the view state when the model change
+          this.model.bind('change', this.render)
         },
         
         render: function(model){
           $(this.el).html(Tmpl.load('todo-tmpl', this.model.toJSON()))
+          if(!this.displayed){
+            $("#inbox ul").prepend(this.el)
+            this.displayed = true
+          }
           return this
         }
       });
       
+      // ===============
+      // = Controllers =
+      // ===============
+      var Inbox = Backbone.Controller.extend({
+        routes: {
+          "inbox": "inbox",
+          "new": "add"
+        },
+        
+        inbox: function(){
+          console.log('Hello inbox')
+        },
+        
+        add: function(){
+          (new TodoRow({'model': new Todo(), className: 'expanded'})).render()
+        }
+      });
       
-      //Init script
-      var demoTodo = new Todo({"name": 'Hello World'})
-      var t = new TodoRow({'model':demoTodo, 'el':'#inbox ul'})
-      t.render()
+      var inbox = new Inbox()
+      
+      Backbone.history.start()
+      
+      // ========
+      // = Init =
+      // ========
+      //Load todos from persistence layer
+      var todos = new Todos()
+      todos.fetch({
+        success: function(collection, response){
+          //fixture
+          if(!collection.length){
+            console.info('Init todos')
+            var first = new Todo({"name": 'Hello World'})
+            collection.create(first)
+          }
+          collection.chain()
+            .map(function(t){
+              return new TodoRow({model: t})
+            })
+            .each(function(t){
+              t.render()
+            })
+        },
+        error: function(){
+          console.error('oh crap')
+        }
+      })      
     })
     </script>
     
     <!-- Templates -->
     <script type="text/html" charset="utf-8" id="todo-tmpl">
-      <li class="expanded">
         <section>
           <dl class="name">
             <dt><img src="images/checkbox_blank-N.png" /></dt>
@@ -111,7 +139,6 @@
             <dd><input type="text" name="date" value="" placeholder="due date" /></dd>
           </dl>
         </section>
-      </li>
     </script>
     
   </head>
